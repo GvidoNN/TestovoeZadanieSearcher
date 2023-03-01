@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testovoezadaniesearcher.GifsAdapter
@@ -25,6 +26,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainFragment: Fragment(R.layout.fragment_main) {
 
     lateinit var recyclerView: RecyclerView
+    lateinit var adapter: GifsAdapter
+    lateinit var bundle: Bundle
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,6 +72,17 @@ class MainFragment: Fragment(R.layout.fragment_main) {
         CoroutineScope(Dispatchers.IO).launch {
             responce()
         }
+
+        adapter.setOnItemClickListener(object: GifsAdapter.OnItemClickListener{
+
+            override fun onItemClick(position: Int) {
+                bundle = Bundle()
+                bundle.putString("url", gifsList[position].images.original.url)
+                findNavController().navigate(R.id.action_mainFragment_to_gifFragment, bundle)
+
+            }
+
+        })
 
     }
 
