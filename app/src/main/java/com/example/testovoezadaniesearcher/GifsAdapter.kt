@@ -31,7 +31,6 @@ class GifsAdapter(private var gifList: ArrayList<Data>) : RecyclerView.Adapter<G
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = gifList[position]
         Glide.with(context).load(data.images.original.url).into(holder.imGif)
-
     }
 
 
