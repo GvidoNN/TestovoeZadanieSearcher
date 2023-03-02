@@ -1,9 +1,7 @@
 package com.example.testovoezadaniesearcher.data.api
 
-import com.example.testovoezadaniesearcher.domain.model.Data
 import com.example.testovoezadaniesearcher.domain.model.DataResponce
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 private const val API_KEY = "Oefcfa7V3FALWqj9lZ4tq4cmquciql9t"

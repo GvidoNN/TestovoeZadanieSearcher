@@ -12,11 +12,10 @@ import com.example.testovoezadaniesearcher.R
 import com.example.testovoezadaniesearcher.data.api.DataService
 import com.example.testovoezadaniesearcher.domain.model.Data
 import com.example.testovoezadaniesearcher.domain.model.DataResponce
+import com.example.testovoezadaniesearcher.domain.usecase.CheckInterceptorUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,15 +25,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainFragment: Fragment(R.layout.fragment_main) {
 
     lateinit var recyclerView: RecyclerView
-    lateinit var adapter: GifsAdapter
     lateinit var bundle: Bundle
+    val checkInterceptorUseCase by lazy { CheckInterceptorUseCase() }
+    lateinit var adapter: GifsAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
-        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
         recyclerView = requireView().findViewById(R.id.recyclerView)
 
@@ -44,13 +40,13 @@ class MainFragment: Fragment(R.layout.fragment_main) {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = GridLayoutManager(requireContext(),2)
 
-        val retrofit = Retrofit.Builder().baseUrl(BASE_URL).client(client).addConverterFactory(
+        val retrofit = Retrofit.Builder().baseUrl(BASE_URL).client(checkInterceptorUseCase.getClient()).addConverterFactory(
             GsonConverterFactory.create()).build()
 
         val retroService = retrofit.create(DataService::class.java)
 
         fun responce(){
-            retroService.getGifs("ligma").enqueue(object : Callback<DataResponce> {
+            retroService.getGifs("ukraine").enqueue(object : Callback<DataResponce> {
                 override fun onResponse(call: Call<DataResponce>, response: Response<DataResponce>) {
                     val body = response.body()
                     if (body == null) {
@@ -58,7 +54,6 @@ class MainFragment: Fragment(R.layout.fragment_main) {
                     }
                     gifsList.addAll(body!!.res)
                     adapter.notifyDataSetChanged()
-
                 }
 
                 override fun onFailure(call: Call<DataResponce>, t: Throwable) {
@@ -78,6 +73,8 @@ class MainFragment: Fragment(R.layout.fragment_main) {
             override fun onItemClick(position: Int) {
                 bundle = Bundle()
                 bundle.putString("url", gifsList[position].images.original.url)
+                bundle.putString("title", gifsList[position].title)
+                bundle.putString("rating",gifsList[position].rating)
                 findNavController().navigate(R.id.action_mainFragment_to_gifFragment, bundle)
 
             }
@@ -85,9 +82,7 @@ class MainFragment: Fragment(R.layout.fragment_main) {
         })
 
     }
-
     companion object {
         const val BASE_URL= "https://api.giphy.com/v1/"
-
     }
 }
