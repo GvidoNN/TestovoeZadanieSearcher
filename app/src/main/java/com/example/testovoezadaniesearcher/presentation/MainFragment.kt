@@ -14,6 +14,9 @@ import com.example.testovoezadaniesearcher.GifsAdapter
 import com.example.testovoezadaniesearcher.R
 import com.example.testovoezadaniesearcher.data.api.DataService
 import com.example.testovoezadaniesearcher.data.repository.GifRepositoryImpl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment: Fragment(R.layout.fragment_main) {
@@ -44,6 +47,7 @@ class MainFragment: Fragment(R.layout.fragment_main) {
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
 
         btSearch.setOnClickListener {
+
             val textSearch = edSearch.text.toString()
             viewModel.gifList.observe(viewLifecycleOwner) {
                 adapter.setMovieList(it)
