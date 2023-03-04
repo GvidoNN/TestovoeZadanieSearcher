@@ -1,5 +1,6 @@
 package com.example.testovoezadaniesearcher.data.api
 
+import com.example.testovoezadaniesearcher.domain.model.Data
 import com.example.testovoezadaniesearcher.domain.model.DataResponce
 import retrofit2.http.GET
 import retrofit2.http.Query

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.testovoezadaniesearcher.domain.model.Data
 
-class GifsAdapter(private var gifList: ArrayList<Data>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>() {
+class GifsAdapter(private var gifList: MutableList<Data>) : RecyclerView.Adapter<GifsAdapter.ViewHolder>() {
 
     private lateinit var context : Context
     private lateinit var gifListener: OnItemClickListener

@@ -3,16 +3,23 @@ package com.example.testovoezadaniesearcher.presentation
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testovoezadaniesearcher.GifsAdapter
 import com.example.testovoezadaniesearcher.R
 import com.example.testovoezadaniesearcher.data.api.DataService
+import com.example.testovoezadaniesearcher.data.repository.GifRepositoryImpl
 import com.example.testovoezadaniesearcher.domain.model.Data
 import com.example.testovoezadaniesearcher.domain.model.DataResponce
 import com.example.testovoezadaniesearcher.domain.usecase.CheckInterceptorUseCase
+import com.example.testovoezadaniesearcher.domain.usecase.GetTextSearchUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,17 +29,24 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainFragment: Fragment(R.layout.fragment_main) {
+class
+
+MainFragment: Fragment(R.layout.fragment_main) {
 
     lateinit var recyclerView: RecyclerView
     lateinit var bundle: Bundle
     val checkInterceptorUseCase by lazy { CheckInterceptorUseCase() }
+    lateinit var btSearch: ImageButton
+    lateinit var edSearch: EditText
     lateinit var adapter: GifsAdapter
+    val getTextSearchUseCase by lazy { GetTextSearchUseCase() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView = requireView().findViewById(R.id.recyclerView)
+        btSearch = requireView().findViewById(R.id.btSearch)
+        edSearch = requireView().findViewById(R.id.edSearchGif)
 
         val gifsList = mutableListOf<Data>()
         val adapter = GifsAdapter(gifList = gifsList as ArrayList<Data>)
@@ -46,7 +60,8 @@ class MainFragment: Fragment(R.layout.fragment_main) {
         val retroService = retrofit.create(DataService::class.java)
 
         fun responce(){
-            retroService.getGifs("ukraine").enqueue(object : Callback<DataResponce> {
+            val text = edSearch.text.toString()
+            retroService.getGifs(getTextSearchUseCase.showData(text)).enqueue(object : Callback<DataResponce> {
                 override fun onResponse(call: Call<DataResponce>, response: Response<DataResponce>) {
                     val body = response.body()
                     if (body == null) {
@@ -64,9 +79,12 @@ class MainFragment: Fragment(R.layout.fragment_main) {
 
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            responce()
+        btSearch.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                responce()
+            }
         }
+
 
         adapter.setOnItemClickListener(object: GifsAdapter.OnItemClickListener{
 
@@ -82,6 +100,7 @@ class MainFragment: Fragment(R.layout.fragment_main) {
         })
 
     }
+
     companion object {
         const val BASE_URL= "https://api.giphy.com/v1/"
     }

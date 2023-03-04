@@ -2,4 +2,6 @@
 <resources>
     <string name="rating">Рейтинг:</string>
     <string name="title">Название:</string>
+    <string name="gif_name">Название Гифки...</string>
+
 </resources>
