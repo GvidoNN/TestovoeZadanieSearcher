@@ -1,5 +1,6 @@
 package com.example.testovoezadaniesearcher.presentation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,10 +8,31 @@ import com.example.testovoezadaniesearcher.data.repository.GifRepositoryImpl
 import com.example.testovoezadaniesearcher.domain.model.Data
 import com.example.testovoezadaniesearcher.domain.model.DataResponce
 import com.example.testovoezadaniesearcher.domain.repository.GifRepository
+import com.example.testovoezadaniesearcher.domain.usecase.CheckInterceptorUseCase
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class MainViewModel : ViewModel() {
+class MainViewModel (private val repository: GifRepositoryImpl)  : ViewModel() {
 
-    val gifRepository by lazy {GifRepositoryImpl()}
+    val gifList = MutableLiveData<List<Data>>()
+    val errorMessage = MutableLiveData<String>()
 
-//    fun getGif() : MutableLiveData<List<Data>> = gifRepository.getGifs()
+    fun getAllMovies() {
+        val response = repository.getAllGifs()
+        response.enqueue(object : Callback<DataResponce> {
+            override fun onResponse(call: Call<DataResponce>, response: Response<DataResponce>) {
+                val body = response.body()
+                Log.d("MyLog", "$gifList")
+                if (body != null) {
+                    gifList.postValue(body.res)
+                }
+            }
+            override fun onFailure(call: Call<DataResponce>, t: Throwable) {
+                errorMessage.postValue(t.message)
+            }
+        })
+    }
+
+
 }
