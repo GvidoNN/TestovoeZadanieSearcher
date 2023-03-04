@@ -12,7 +12,7 @@ private const val API_KEY = "Oefcfa7V3FALWqj9lZ4tq4cmquciql9t"
 private const val BASE_URL = "https://api.giphy.com/v1/"
 
 interface DataService {
-    @GET("gifs/search?key=$API_KEY&limit=20")
+    @GET("gifs/search?key=$API_KEY&limit=25")
     fun getGifs(@Query("q") text: String): retrofit2.Call<DataResponce>
 
   companion object {
