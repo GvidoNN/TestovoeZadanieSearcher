@@ -12,8 +12,6 @@ import com.example.testovoezadaniesearcher.domain.model.Data
 
 class GifsAdapter() : RecyclerView.Adapter<GifsAdapter.ViewHolder>() {
 
-//    private var gifList: ArrayList<Data>
-//    private var gifList: MutableList<Data>
     private lateinit var gifListener: OnItemClickListener
     private lateinit var context : Context
 
@@ -23,8 +21,6 @@ class GifsAdapter() : RecyclerView.Adapter<GifsAdapter.ViewHolder>() {
         notifyDataSetChanged()
     }
 
-
-//    , listener: OnItemClickListener
     class ViewHolder(itemView: View, listener: OnItemClickListener): RecyclerView.ViewHolder(itemView){
         val imGif = itemView.findViewById<ImageView>(R.id.imGif)
         val tvGifBundle = itemView.findViewById<TextView>(R.id.tvGifTitleBundle)
@@ -41,7 +37,6 @@ class GifsAdapter() : RecyclerView.Adapter<GifsAdapter.ViewHolder>() {
         context = parent.context
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_gif, parent, false)
         return ViewHolder(view, gifListener)
-//        , gifListener
     }
 
     override fun getItemCount(): Int {

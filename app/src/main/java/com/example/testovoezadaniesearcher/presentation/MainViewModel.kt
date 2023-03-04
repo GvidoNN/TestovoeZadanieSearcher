@@ -1,25 +1,54 @@
 package com.example.testovoezadaniesearcher.presentation
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.testovoezadaniesearcher.data.repository.GifRepositoryImpl
 import com.example.testovoezadaniesearcher.domain.model.Data
 import com.example.testovoezadaniesearcher.domain.model.DataResponce
-import com.example.testovoezadaniesearcher.domain.repository.GifRepository
-import com.example.testovoezadaniesearcher.domain.usecase.CheckInterceptorUseCase
+import com.example.testovoezadaniesearcher.domain.usecase.GetDataUseCase
+import com.example.testovoezadaniesearcher.domain.usecase.GetTextSearchUseCase
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel (private val repository: GifRepositoryImpl)  : ViewModel() {
+//class MainViewModel(
+//    private val getTextSearchUseCase: GetTextSearchUseCase,
+//    private val getDataUseCase: GetDataUseCase
+//) : ViewModel() {
+//
+//    val gifList = MutableLiveData<List<Data>>()
+//    val errorMessage = MutableLiveData<String>()
+//    fun getAllGifs(text: String) {
+//        val response = getDataUseCase.getData(getTextSearchUseCase.showData(text = text))
+//        response.enqueue(object : Callback<DataResponce> {
+//            override fun onResponse(call: Call<DataResponce>, response: Response<DataResponce>) {
+//                val body = response.body()
+//                Log.d("MyLog", "$gifList")
+//                if (body != null) {
+//                    gifList.postValue(body.res)
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<DataResponce>, t: Throwable) {
+//                errorMessage.postValue(t.message)
+//            }
+//        })
+//    }
+//
+//
+//}
+
+class MainViewModel(
+    private val getTextSearchUseCase: GetTextSearchUseCase,
+    private val getDataUseCase: GetDataUseCase
+) : ViewModel() {
 
     val gifList = MutableLiveData<List<Data>>()
     val errorMessage = MutableLiveData<String>()
 
-    fun getAllMovies() {
-        val response = repository.getAllGifs()
+    fun getAllGifs(text: String) {
+        val response = getDataUseCase.getData(getTextSearchUseCase.showData(text = text))
         response.enqueue(object : Callback<DataResponce> {
             override fun onResponse(call: Call<DataResponce>, response: Response<DataResponce>) {
                 val body = response.body()
@@ -28,6 +57,7 @@ class MainViewModel (private val repository: GifRepositoryImpl)  : ViewModel() {
                     gifList.postValue(body.res)
                 }
             }
+
             override fun onFailure(call: Call<DataResponce>, t: Throwable) {
                 errorMessage.postValue(t.message)
             }
